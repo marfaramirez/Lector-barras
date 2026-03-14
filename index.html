@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector de Código de Barras</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        #camera { width: 100%; max-width: 600px; height: 400px; border: 2px solid #333; margin-bottom: 20px; }
+        #resultado { font-size: 1.5rem; color: #2c3e50; font-weight: bold; }
+        video { width: 100%; height: auto; }
+        canvas { display: none; } /* Ocultamos el canvas de procesamiento */
+    </style>
+</head>
+<body>
+
+    <h2>Escanea un código de barras</h2>
+    <div id="camera"></div>
+    <p>Resultado: <span id="resultado">Esperando...</span></p>
+
+    <script>
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#camera'), // Donde se verá la cámara
+                constraints: {
+                    facingMode: "environment" // Usa la cámara trasera en móviles
+                },
+            },
+            decoder: {
+                readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"] // Formatos comunes
+            }
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log("Cámara lista.");
+            Quagga.start();
+        });
+
+        // Evento que se dispara cuando se detecta un código
+        Quagga.onDetected(function(data) {
+            const code = data.codeResult.code;
+            document.getElementById('resultado').innerText = code;
+            
+            // Opcional: Detener la cámara tras una lectura exitosa
+            // Quagga.stop(); 
+        });
+    </script>
+</body>
+<style>html{
+ color:darkviolet;
+ font-size:25px;
+ font-weight:600;
+}
+</style><script>/*Here write your javascript code*/</script></html>
